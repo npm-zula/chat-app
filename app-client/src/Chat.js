@@ -33,27 +33,35 @@ const Chat = ({ socket, username, room }) => {
 
   return (
     <div>
-      <div className="chat-window">
-        <div className="chat-header">
-          <p>
+      <div className="chat-window bg-rose-100 rounded-lg shadow-lg text-gray-900 h-96">
+        <div className="chat-header bg-rose-500 text-white py-2 px-4 rounded-t-lg">
+          <p className="text-lg font-bold">
             Live Chat <span>{username}</span>
           </p>
         </div>
-        <div className="chat-body">
+        <div className="chat-body py-4 px-6 overflow-y-auto h-72">
           <ScrollToBottom className="message-container">
             {messageList.map((messageContent) => {
+              const isCurrentUser = username === messageContent.author;
+
               return (
                 <div
-                  className="message"
-                  id={username === messageContent.author ? "you" : "other"}
+                  className={`message flex ${
+                    isCurrentUser ? "justify-end" : "justify-start"
+                  }`}
                 >
-                  <div>
-                    <div className="message-content">
-                      <p>{messageContent.message}</p>
-                    </div>
-                    <div className="message-meta">
-                      <p id="time">{messageContent.time}</p>
-                      <p id="author">{messageContent.author}</p>
+                  <div
+                    className={`message-content p-2 rounded-lg ${
+                      isCurrentUser
+                        ? "bg-rose-300 text-white ml-4"
+                        : "bg-white text-gray-900 mr-4"
+                    }`}
+                    style={{ maxWidth: "70%" }}
+                  >
+                    <p>{messageContent.message}</p>
+                    <div className="flex justify-end mt-2 text-xs text-gray-700">
+                      <p className="mr-1">{messageContent.author}</p>
+                      <p>{messageContent.time}</p>
                     </div>
                   </div>
                 </div>
@@ -61,7 +69,7 @@ const Chat = ({ socket, username, room }) => {
             })}
           </ScrollToBottom>
         </div>
-        <div className="chat-footer">
+        <div className="chat-footer bg-rose-500 py-2 px-4 rounded-b-lg flex">
           <input
             type="text"
             value={currentMessage}
@@ -69,11 +77,14 @@ const Chat = ({ socket, username, room }) => {
             onChange={(event) => {
               setCurrentMessage(event.target.value);
             }}
-            onKeyPress={(event) => {
-              event.key === "Enter" && sendMessage();
-            }}
+            className="flex-grow py-2 px-4 rounded-md border border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-500"
           />
-          <button onClick={sendMessage}>&#9658;</button>
+          <button
+            onClick={sendMessage}
+            className="ml-2 px-4 py-2 bg-white text-rose-500 font-bold rounded-md hover:bg-rose-200"
+          >
+            &#9658;
+          </button>
         </div>
       </div>
     </div>
